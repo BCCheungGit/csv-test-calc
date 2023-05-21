@@ -2,7 +2,13 @@
 {% block title %}Analysis{% endblock %}
 
 {% block content %}
-    <h3>Currently Analyzing: </h3>
+    <h3>Currently Analyzing: Bitcoin Price Data</h3>
+    <h3>High Price Mean:  {{ highpricemean }} </h3>
+    <h3>High Price Median: {{ highpricemed }}</h3>
+    <h3>High Price Standard Deviation: {{ highpricestd }}</h3>
     
-
+    <h3>Low Price Mean:  {{ lowpricemean }} </h3>
+    <h3>Low Price Median: {{ lowpricemed }}</h3>
+    <h3>Low Price Standard Deviation: {{ lowpricestd }}</h3>
+    
 {% endblock %}

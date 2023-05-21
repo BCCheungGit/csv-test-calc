@@ -15,7 +15,7 @@ views = Blueprint('views', __name__)
 @views.route('/home')
 @login_required
 def home():
-    yfdata = yf.download('BTC-USD')
+    yfdata = yf.download('BTC-USD', start="2018-01-01", end="2023-05-20")
     yfdata.to_csv('btcprice.csv')
     btc_price_data = pd.read_csv('btcprice.csv',
                              index_col=False, 
@@ -36,5 +36,11 @@ def home():
     low_price_mean = pricedata['Low'].mean()
     low_price_median = pricedata['Low'].median()
     low_price_std = pricedata['Low'].std()
-    
-    return render_template('home.html', user=current_user)
+
+    return render_template('home.html', user=current_user, 
+                           highpriceman = high_price_mean, 
+                           highpricemed = high_price_median, 
+                           highpricestd = high_price_std,
+                           lowpricemean = low_price_mean,
+                           lowpricemed = low_price_median,
+                           lowpricestd = low_price_std)
