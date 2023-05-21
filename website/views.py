@@ -28,7 +28,13 @@ def home():
                                     "Adj Close",
                                     "Volume"],
                                     skiprows=1)
+    pricedata = btc_price_data.astype({'High': 'float', 'Low' : 'float'})
+    high_price_mean = pricedata['High'].mean()
+    high_price_median = pricedata['High'].median()
+    high_price_std = pricedata['High'].std()
     
-
-
+    low_price_mean = pricedata['Low'].mean()
+    low_price_median = pricedata['Low'].median()
+    low_price_std = pricedata['Low'].std()
+    
     return render_template('home.html', user=current_user)
