@@ -3,6 +3,8 @@ from . import db
 from .models import User
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+import re
+
 
 auth = Blueprint('auth', __name__)
 
@@ -32,9 +34,14 @@ def signup():
         username = request.form.get('username')
         password = request.form.get('password')
         confirm_pass = request.form.get('confirm_pass')
-
+        password_upper = False
         email_exists = User.query.filter_by(email=email).first()
         user_exists = User.query.filter_by(username=username).first()
+        regex = re.compile('[@_!#$%^&*()<>?/\|}{~:]')
+
+        for i in range(0, len(password)):
+            if password[i].isupper():
+                password_upper = True
 
         if email_exists:
             flash('Email is already in use. Please log in.', category='error')
@@ -46,6 +53,10 @@ def signup():
             flash('Username is too short', category='error')
         elif len(password) < 6:
             flash('Password is too short.', category='error')
+        elif regex.search(password) == None:
+            flash('Password must contain a special character')
+        elif password_upper == False:
+            flash('Password must contain at least one capital letter')
         elif len(email) < 5:
             flash('Email is invalid.', category='error')
         else:
