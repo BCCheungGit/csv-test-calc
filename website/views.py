@@ -5,9 +5,7 @@ from . import db
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import yfinance as yf
 from pathlib import Path
-from bs4 import BeautifulSoup as Soup
 import os
 
 views = Blueprint('views', __name__)
