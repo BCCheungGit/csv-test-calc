@@ -13,5 +13,5 @@ class User(db.Model, UserMixin):
 class Data(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     csvname = db.Column(db.String(150), unique = True, nullable = False)
-    client = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable = False)
+    author = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable = False)
     

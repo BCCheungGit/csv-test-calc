@@ -6,8 +6,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import yfinance as yf
-
-
+from pathlib import Path
 
 views = Blueprint('views', __name__)
 
@@ -28,7 +27,7 @@ def home():
                                     "Adj Close",
                                     "Volume"],
                                     skiprows=1)
+    filepath = r"C:\Users\Benjamin Cheung\projects\csv-test-calc\btcprice.csv"
     
 
-
-    return render_template('home.html', user=current_user)
+    return render_template('home.html', user=current_user, filename=Path(filepath).name)
