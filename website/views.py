@@ -79,7 +79,7 @@ def delete(id):
         os.remove(path)
         db.session.delete(data)
         db.session.commit()
-        flash('File deleted,', category='success')
+        flash('File deleted', category='success')
         
     dfs = []
     rest = Data.query.filter_by(author=current_user.id).all()
