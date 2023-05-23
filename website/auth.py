@@ -18,7 +18,7 @@ def login():
             if check_password_hash(user.password, password):
                 flash('Logged in.', category='success')
                 login_user(user, remember=True)
-                return redirect(url_for('views.upload'))  
+                return redirect(url_for('views.home'))  
             else:
                 flash('Password is incorrect.', category='error')
         else:
@@ -60,7 +60,7 @@ def signup():
             db.session.commit()
             login_user(new_user, remember=True)
             flash('User created successfully', category='success')
-            return redirect(url_for('views.upload'))
+            return redirect(url_for('views.home'))
     return render_template('signup.html', user=current_user)
 
 @auth.route('/logout')

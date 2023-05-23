@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Analysis{% endblock %}
+
+{% block content %}
+    {% for i in range(data| length) %}
+    <form action="/delete/{{ data[i].id }}">
+    <br> 
+    <h4>File Name: {{data[i].filename}}</h4>
+    {{ tables[i]|safe }}
+    <br>
+    <button type="submit" class="btn btn-primary">Delete This File</button>
+    </form> 
+    {% endfor %}
+    {% if data| length == 0 %}
+    <br>
+    <div align="center">
+    <h4>You have no files. Please upload a file to begin!</h4>
+    <form action="/upload">
+        <button type="submit" class="btn btn-primary">Upload Files</button>
+    </form>
+    </div>
+    {% endif %}
+
+
+    
+{% endblock %}
