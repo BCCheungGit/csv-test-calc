@@ -1,14 +1,19 @@
 {% extends 'base.html' %}
-{% block title %}Analysis{% endblock %}
+{% block title %}Homepage{% endblock %}
 
 {% block content %}
-    <h3>Currently Analyzing: Bitcoin Price Data</h3>
-    <h3>High Price Mean:  {{ highpricemean }} </h3>
-    <h3>High Price Median: {{ highpricemed }}</h3>
-    <h3>High Price Standard Deviation: {{ highpricestd }}</h3>
-    
-    <h3>Low Price Mean:  {{ lowpricemean }} </h3>
-    <h3>Low Price Median: {{ lowpricemed }}</h3>
-    <h3>Low Price Standard Deviation: {{ lowpricestd }}</h3>
-    
+<div align="center">
+    <br>
+    <h3>Welcome Back, {{ user.username }}</h3>
+    <br>
+    <form action="/upload">
+        <button type="submit" class="btn btn-primary">Upload a File</button>
+    </form>
+    <br>
+    <form action="/view">
+        <button type="submit" class="btn btn-primary">View your Data</button>
+    </form>
+</div>
+
+
 {% endblock %}

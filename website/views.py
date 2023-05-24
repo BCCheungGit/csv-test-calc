@@ -1,13 +1,12 @@
 from flask import Blueprint, render_template, flash, request, redirect, url_for
 from flask_login import login_required, current_user
-from .models import User
+from .models import User, Data
 from . import db
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import yfinance as yf
-
-
+from pathlib import Path
+import os
 
 views = Blueprint('views', __name__)
 
@@ -15,32 +14,80 @@ views = Blueprint('views', __name__)
 @views.route('/home')
 @login_required
 def home():
-    yfdata = yf.download('BTC-USD', start="2018-01-01", end="2023-05-20")
-    yfdata.to_csv('btcprice.csv')
-    btc_price_data = pd.read_csv('btcprice.csv',
-                             index_col=False, 
-                             low_memory=False,  
-                             names=["Date", 
-                                    "Open",
-                                    "High",
-                                    "Low",
-                                    "Close",
-                                    "Adj Close",
-                                    "Volume"],
-                                    skiprows=1)
-    pricedata = btc_price_data.astype({'High': 'float', 'Low' : 'float'})
-    high_price_mean = pricedata['High'].mean()
-    high_price_median = pricedata['High'].median()
-    high_price_std = pricedata['High'].std()
-    
-    low_price_mean = pricedata['Low'].mean()
-    low_price_median = pricedata['Low'].median()
-    low_price_std = pricedata['Low'].std()
+    return render_template('home.html', user=current_user)
 
-    return render_template('home.html', user=current_user, 
-                           highpriceman = high_price_mean, 
-                           highpricemed = high_price_median, 
-                           highpricestd = high_price_std,
-                           lowpricemean = low_price_mean,
-                           lowpricemed = low_price_median,
-                           lowpricestd = low_price_std)
+
+
+@views.route('/upload')
+@login_required
+def upload():
+    return render_template('upload.html', user=current_user)
+
+@views.route('/success', methods=['POST'])
+@login_required
+def fileupload():
+    if request.method == 'POST':
+        f = request.files['file']
+        f.save(f.filename)
+        filedataframe = pd.read_csv(f.filename, encoding='latin1')
+        smallerdf = pd.DataFrame(data=filedataframe.head(5))
+        
+        view_path = Path(r"C:\Users\Benjamin Cheung\projects\csv-test-calc\website\templates\view.html")
+        existingdata = Data.query.filter_by(filename = f.filename).first()
+        
+        if not existingdata:
+            new_data = Data(filename=f.filename, author=current_user.id)
+            db.session.add(new_data)
+            db.session.commit()
+        else:
+            flash('A file with this name already exists', category='error')
+            return render_template('upload.html', user=current_user)
+        return render_template('success.html', name=f.filename, user=current_user,
+                               tables=[smallerdf.to_html(classes='data', header="true")])
+
+@views.route('/view')
+@login_required
+def view():
+    dfs = []
+    data = Data.query.filter_by(author=current_user.id).all()
+    for csv in data:
+        newdf = pd.read_csv(csv.filename,encoding='latin1').head(5)
+        dfs.append(newdf)
+        
+    
+    return render_template('view.html', 
+                           user=current_user, 
+                           data=data, 
+                           tables=[dataframe.to_html(classes='data', header='true') for dataframe in dfs]
+                           )
+
+
+@views.route('/delete/<id>')
+@login_required
+def delete(id):
+    data = Data.query.filter_by(id=id).first()
+    alldata = Data.query.filter_by(author=current_user.id).all()
+    if not data:
+        flash('File does not exist', category='error')
+        return render_template('view.html', 
+                        user=current_user, 
+                        data=alldata, 
+                        tables=[dataframe.to_html(classes='data', header='true') for dataframe in dfs]
+                        )
+    else:
+        path = Path(r'C:/Users/Benjamin Cheung/projects/csv-test-calc', data.filename)
+        os.remove(path)
+        db.session.delete(data)
+        db.session.commit()
+        flash('File deleted', category='success')
+        
+    dfs = []
+    rest = Data.query.filter_by(author=current_user.id).all()
+    for csv in rest:
+        newdf = pd.read_csv(csv.filename, encoding='latin1').head(5)
+        dfs.append(newdf)
+    return render_template('view.html', 
+                            user=current_user, 
+                            data=rest, 
+                            tables=[dataframe.to_html(classes='data', header='true') for dataframe in dfs]
+                            )

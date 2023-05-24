@@ -51,7 +51,7 @@ def signup():
         elif len(password) < 6:
             flash('Password is too short.', category='error')
         elif password_upper == False:
-            flash('Password must contain at least one capital letter')
+            flash('Password must contain at least one capital letter', category='error')
         elif len(email) < 5:
             flash('Email is invalid.', category='error')
         else:
@@ -67,4 +67,4 @@ def signup():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('views.home'))
+    return redirect(url_for('views.upload'))
