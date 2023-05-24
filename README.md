@@ -25,3 +25,8 @@ pip install -r requirements.txt
 ```shell
 python app.py
 ```
+
+TODO
+[X] add file uploading
+[] add statistical analysis options
+[] spin up a local owncloud webserver to store files
